@@ -3,14 +3,12 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import { SearchForm } from '@/components/SearchForm';
-import { ResultsTable } from '@/components/ResultsTable';
-import { TransferContent } from '@/components/TransferContent';
+import { StudentDetailCard } from '@/components/StudentDetailCard';
 import { StudentInfo, SearchResponse } from '@/lib/types';
 import { Loader } from 'lucide-react';
 
 export default function Home() {
   const [searchResults, setSearchResults] = useState<StudentInfo[]>([]);
-  const [selectedStudent, setSelectedStudent] = useState<StudentInfo | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -23,7 +21,6 @@ export default function Home() {
     setIsLoading(true);
     setError(null);
     setSearchResults([]);
-    setSelectedStudent(null);
 
     try {
       const response = await fetch('/api/students/search', {
@@ -105,26 +102,12 @@ export default function Home() {
           </div>
         )}
 
-        {/* Results Table */}
+        {/* Results Cards */}
         {searchResults.length > 0 && !isLoading && (
-          <section className="bg-gray-50 rounded-lg p-6 mb-8">
-            <h2 className="text-xl font-bold text-gray-800 mb-4">
-              Kết quả tìm kiếm ({searchResults.length})
-            </h2>
-            <ResultsTable
-              students={searchResults}
-              onStudentSelect={setSelectedStudent}
-            />
-          </section>
-        )}
-
-        {/* Transfer Content & QR Code */}
-        {selectedStudent && !isLoading && (
-          <section className="bg-gray-50 rounded-lg p-6">
-            <h2 className="text-xl font-bold text-gray-800 mb-4">
-              Thông tin học sinh: {selectedStudent.name} - Lớp {selectedStudent.class}
-            </h2>
-            <TransferContent student={selectedStudent} />
+          <section className="space-y-6">
+            {searchResults.map((student, index) => (
+              <StudentDetailCard key={index} student={student} />
+            ))}
           </section>
         )}
       </div>
