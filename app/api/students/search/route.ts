@@ -13,7 +13,7 @@ async function getGoogleSheetsClient() {
     throw new Error('GOOGLE_SHEETS_API_KEY environment variable is not set');
   }
 
-  return google.sheets({ version: 'v4', auth: new google.auth.GoogleAuth({ credentials: { api_key: apiKey } }) });
+  return google.sheets({ version: 'v4', auth: apiKey });
 }
 
 /**
