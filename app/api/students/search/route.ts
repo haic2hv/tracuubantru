@@ -54,12 +54,15 @@ async function fetchStudentData(): Promise<StudentInfo[]> {
   }
 
   try {
+    console.log('[v0] Fetching from Google Sheets:', { sheetId, sheetName });
+    
     const response = await sheets.spreadsheets.values.get({
       spreadsheetId: sheetId,
-      range: `${sheetName}!A:K`, // Columns A to K
+      range: `${sheetName}!A:N`, // Columns A to N (14 columns as per your structure)
     });
 
     const rows = response.data.values || [];
+    console.log('[v0] Raw rows from Google Sheets:', rows.length, rows.length > 0 ? rows[0] : 'No rows');
     
     // Skip header row (row 0) and parse data
     const students: StudentInfo[] = rows
@@ -67,6 +70,8 @@ async function fetchStudentData(): Promise<StudentInfo[]> {
       .map(parseStudentRow)
       .filter((student): student is StudentInfo => student !== null);
 
+    console.log('[v0] Parsed students:', students.length);
+    
     return students;
   } catch (error) {
     console.error('[v0] Error fetching from Google Sheets:', error);
