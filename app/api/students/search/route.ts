@@ -18,10 +18,10 @@ async function getGoogleSheetsClient() {
 
 /**
  * Parse row data from Google Sheets into StudentInfo object
- * Row format: [STT, Name, Class, Meals, MealCost, ServiceFee, InitialCost, AdditionalCost, ElectricityCost, TotalCost, Notes]
+ * Row format: [STT, Name, Class, Meals, MealCost, ServiceFee, InitialCost, AdditionalCost, ElectricityCost, TotalCost, Notes, ND CK, TrangThai, QRCode]
  */
 function parseStudentRow(row: (string | number)[]): StudentInfo | null {
-  if (!row || row.length < 11) return null;
+  if (!row || row.length < 2) return null;
 
   return {
     name: String(row[1] || '').trim(),
@@ -34,6 +34,7 @@ function parseStudentRow(row: (string | number)[]): StudentInfo | null {
     electricityCost: row[8] || 0,
     totalCost: row[9] || 0,
     notes: String(row[10] || '').trim(),
+    qrCode: row.length > 13 ? String(row[13] || '').trim() : undefined,
   };
 }
 

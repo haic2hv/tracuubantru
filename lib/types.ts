@@ -1,6 +1,6 @@
 /**
  * Student boarding information structure
- * Maps to Google Sheets columns B-K
+ * Maps to Google Sheets columns B-N
  */
 export interface StudentInfo {
   name: string;              // Column B: Họ và tên
@@ -13,6 +13,7 @@ export interface StudentInfo {
   electricityCost: number | string; // Column I: Tiền điện điều hòa
   totalCost: number | string;      // Column J: Tổng tiền
   notes: string;             // Column K: Ghi chú
+  qrCode?: string;           // Column N: QRCode (URL to QR image)
 }
 
 /**
