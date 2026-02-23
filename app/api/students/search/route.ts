@@ -13,7 +13,7 @@ async function getGoogleSheetsClient() {
     throw new Error('GOOGLE_SHEETS_API_KEY environment variable is not set');
   }
 
-  return google.sheets({ version: 'v4', auth: new google.auth.GoogleAuth({ credentials: { api_key: apiKey } }) });
+  return google.sheets({ version: 'v4', auth: apiKey });
 }
 
 /**
@@ -43,10 +43,14 @@ function parseStudentRow(row: (string | number)[]): StudentInfo | null {
 async function fetchStudentData(): Promise<StudentInfo[]> {
   const sheets = await getGoogleSheetsClient();
   const sheetId = process.env.SHEET_ID;
-  const sheetName = process.env.SHEET_NAME || 'Sheet1';
+  const sheetName = process.env.SHEET_NAME;
 
   if (!sheetId) {
     throw new Error('SHEET_ID environment variable is not set');
+  }
+
+  if (!sheetName) {
+    throw new Error('SHEET_NAME environment variable is not set');
   }
 
   try {
