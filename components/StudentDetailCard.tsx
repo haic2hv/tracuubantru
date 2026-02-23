@@ -5,7 +5,7 @@ import { StudentInfo } from '@/lib/types';
 import { formatCurrency } from '@/lib/vietnameseUtils';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Check, Copy, User, BookOpen, Users, DollarSign, FileText, Receipt } from 'lucide-react';
+import { Check, Copy, User, BookOpen, Users, DollarSign, FileText, Receipt, Download, X } from 'lucide-react';
 
 interface StudentDetailCardProps {
   student: StudentInfo;
@@ -13,6 +13,7 @@ interface StudentDetailCardProps {
 
 export function StudentDetailCard({ student }: StudentDetailCardProps) {
   const [copied, setCopied] = useState(false);
+  const [qrModalOpen, setQrModalOpen] = useState(false);
 
   const transferContent = student.transferContent || 'Không có thông tin';
 
@@ -22,15 +23,26 @@ export function StudentDetailCard({ student }: StudentDetailCardProps) {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const handleDownloadQR = async () => {
+    if (!student.qrCode) return;
+    
+    try {
+      const link = document.createElement('a');
+      link.href = student.qrCode;
+      link.download = `QR_${student.name}_${student.class}.png`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error('[v0] Error downloading QR code:', error);
+    }
+  };
+
   return (
     <Card className="p-6 bg-white border border-gray-200 rounded-lg">
-      {/* Header with student name and alert badge */}
+      {/* Header with student name */}
       <div className="flex items-start justify-between mb-6 pb-4 border-b border-gray-200">
-        <h2 className="text-2xl font-bold text-gray-800">Thông tin học phí</h2>
-        <div className="bg-red-100 text-red-700 px-3 py-1 rounded-md text-sm font-semibold flex items-center gap-1">
-          <span className="w-2 h-2 bg-red-600 rounded-full"></span>
-          Chưa nộp
-        </div>
+        <h2 className="text-2xl font-bold text-gray-800">{student.name} - Lớp {student.class}</h2>
       </div>
 
       {/* Student Information Section */}
@@ -180,11 +192,59 @@ export function StudentDetailCard({ student }: StudentDetailCardProps) {
         <div className="pt-6 border-t border-gray-200">
           <p className="text-center text-sm font-semibold text-gray-700 mb-4">QR Code Chuyển Khoản</p>
           <div className="flex justify-center">
-            <img
-              src={student.qrCode}
-              alt="QR Code chuyển khoản"
-              className="w-48 h-48 object-contain border-2 border-gray-300 rounded-lg p-2"
-            />
+            <button
+              onClick={() => setQrModalOpen(true)}
+              className="hover:opacity-80 transition-opacity cursor-pointer"
+              title="Bấm để xem rõ hơn"
+            >
+              <img
+                src={student.qrCode}
+                alt="QR Code chuyển khoản"
+                className="w-48 h-48 object-contain border-2 border-gray-300 rounded-lg p-2"
+              />
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* QR Code Modal */}
+      {qrModalOpen && student.qrCode && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white rounded-lg p-6 max-w-2xl mx-4 relative">
+            <button
+              onClick={() => setQrModalOpen(false)}
+              className="absolute top-4 right-4 p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              aria-label="Close"
+            >
+              <X size={24} className="text-gray-600" />
+            </button>
+
+            <h3 className="text-lg font-bold text-gray-800 mb-4">QR Code Chuyển Khoản</h3>
+            <p className="text-sm text-gray-600 mb-4">{student.name} - Lớp {student.class}</p>
+
+            <div className="flex justify-center mb-6">
+              <img
+                src={student.qrCode}
+                alt="QR Code chuyển khoản"
+                className="max-w-sm object-contain border-2 border-gray-300 rounded-lg p-4"
+              />
+            </div>
+
+            <div className="flex gap-3 justify-center">
+              <Button
+                onClick={handleDownloadQR}
+                className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white"
+              >
+                <Download size={16} />
+                Tải xuống
+              </Button>
+              <Button
+                onClick={() => setQrModalOpen(false)}
+                variant="outline"
+              >
+                Đóng
+              </Button>
+            </div>
           </div>
         </div>
       )}

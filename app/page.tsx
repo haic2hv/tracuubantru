@@ -105,6 +105,7 @@ export default function Home() {
         {/* Results Cards */}
         {searchResults.length > 0 && !isLoading && (
           <section className="space-y-6">
+            <h2 className="text-2xl font-bold text-gray-800 mb-4">Kết quả tìm kiếm ({searchResults.length})</h2>
             {searchResults.map((student, index) => (
               <StudentDetailCard key={index} student={student} />
             ))}
