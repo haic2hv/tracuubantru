@@ -34,6 +34,7 @@ function parseStudentRow(row: (string | number)[]): StudentInfo | null {
     electricityCost: row[8] || 0,
     totalCost: row[9] || 0,
     notes: String(row[10] || '').trim(),
+    transferContent: row.length > 11 ? String(row[11] || '').trim() : undefined,
     qrCode: row.length > 13 ? String(row[13] || '').trim() : undefined,
   };
 }

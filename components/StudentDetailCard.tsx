@@ -2,10 +2,10 @@
 
 import { useState } from 'react';
 import { StudentInfo } from '@/lib/types';
-import { generateTransferContent, formatCurrency } from '@/lib/vietnameseUtils';
+import { formatCurrency } from '@/lib/vietnameseUtils';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Check, Copy, User, BookOpen, Phone, Users, DollarSign, FileText } from 'lucide-react';
+import { Check, Copy, User, BookOpen, Users, DollarSign, FileText, Receipt } from 'lucide-react';
 
 interface StudentDetailCardProps {
   student: StudentInfo;
@@ -14,7 +14,7 @@ interface StudentDetailCardProps {
 export function StudentDetailCard({ student }: StudentDetailCardProps) {
   const [copied, setCopied] = useState(false);
 
-  const transferContent = generateTransferContent(student.name, student.class);
+  const transferContent = student.transferContent || 'Không có thông tin';
 
   const handleCopy = () => {
     navigator.clipboard.writeText(transferContent);
@@ -57,19 +57,6 @@ export function StudentDetailCard({ student }: StudentDetailCardProps) {
           </div>
         </div>
 
-        {/* Phone - only show if available */}
-        {student.notes && (
-          <div className="flex items-start gap-4">
-            <div className="flex-shrink-0">
-              <Phone className="w-5 h-5 text-blue-500 mt-1" />
-            </div>
-            <div className="flex-1">
-              <p className="text-sm text-gray-600 font-medium">Số điện thoại PH</p>
-              <p className="text-base font-semibold text-gray-800">••••••3456</p>
-            </div>
-          </div>
-        )}
-
         {/* Number of meals */}
         <div className="flex items-start gap-4">
           <div className="flex-shrink-0">
@@ -81,16 +68,84 @@ export function StudentDetailCard({ student }: StudentDetailCardProps) {
           </div>
         </div>
 
+        {/* Meal Cost */}
+        <div className="flex items-start gap-4">
+          <div className="flex-shrink-0">
+            <DollarSign className="w-5 h-5 text-blue-500 mt-1" />
+          </div>
+          <div className="flex-1">
+            <p className="text-sm text-gray-600 font-medium">Tiền ăn</p>
+            <p className="text-base font-semibold text-gray-800">{formatCurrency(student.mealCost)}</p>
+          </div>
+        </div>
+
+        {/* Service Fee */}
+        <div className="flex items-start gap-4">
+          <div className="flex-shrink-0">
+            <Receipt className="w-5 h-5 text-blue-500 mt-1" />
+          </div>
+          <div className="flex-1">
+            <p className="text-sm text-gray-600 font-medium">Chi phí phục vụ</p>
+            <p className="text-base font-semibold text-gray-800">{formatCurrency(student.serviceFee)}</p>
+          </div>
+        </div>
+
+        {/* Initial Cost */}
+        <div className="flex items-start gap-4">
+          <div className="flex-shrink-0">
+            <Receipt className="w-5 h-5 text-blue-500 mt-1" />
+          </div>
+          <div className="flex-1">
+            <p className="text-sm text-gray-600 font-medium">Chi phí ban đầu</p>
+            <p className="text-base font-semibold text-gray-800">{formatCurrency(student.initialCost)}</p>
+          </div>
+        </div>
+
+        {/* Additional Cost */}
+        <div className="flex items-start gap-4">
+          <div className="flex-shrink-0">
+            <Receipt className="w-5 h-5 text-blue-500 mt-1" />
+          </div>
+          <div className="flex-1">
+            <p className="text-sm text-gray-600 font-medium">Chi phí bổ sung</p>
+            <p className="text-base font-semibold text-gray-800">{formatCurrency(student.additionalCost)}</p>
+          </div>
+        </div>
+
+        {/* Electricity Cost */}
+        <div className="flex items-start gap-4">
+          <div className="flex-shrink-0">
+            <Receipt className="w-5 h-5 text-blue-500 mt-1" />
+          </div>
+          <div className="flex-1">
+            <p className="text-sm text-gray-600 font-medium">Tiền điện điều hòa</p>
+            <p className="text-base font-semibold text-gray-800">{formatCurrency(student.electricityCost)}</p>
+          </div>
+        </div>
+
         {/* Total Amount - Highlighted */}
-        <div className="flex items-start gap-4 my-6 pt-4 border-t border-gray-200">
+        <div className="flex items-start gap-4 my-6 pt-4 border-t-2 border-gray-300">
           <div className="flex-shrink-0">
             <DollarSign className="w-5 h-5 text-blue-600 mt-1" />
           </div>
           <div className="flex-1">
-            <p className="text-sm text-gray-600 font-medium">Số tiền</p>
+            <p className="text-sm text-gray-600 font-medium">Tổng tiền</p>
             <p className="text-3xl font-bold text-blue-600">{formatCurrency(student.totalCost)}</p>
           </div>
         </div>
+
+        {/* Notes */}
+        {student.notes && (
+          <div className="flex items-start gap-4 pt-4 border-t border-gray-200">
+            <div className="flex-shrink-0">
+              <FileText className="w-5 h-5 text-blue-500 mt-1" />
+            </div>
+            <div className="flex-1">
+              <p className="text-sm text-gray-600 font-medium">Ghi chú</p>
+              <p className="text-base text-gray-800">{student.notes}</p>
+            </div>
+          </div>
+        )}
 
         {/* Transfer Content */}
         <div className="flex items-start gap-4 pt-4 border-t border-gray-200">
@@ -118,19 +173,6 @@ export function StudentDetailCard({ student }: StudentDetailCardProps) {
             </div>
           </div>
         </div>
-
-        {/* Notes */}
-        {student.notes && (
-          <div className="flex items-start gap-4 pt-4 border-t border-gray-200">
-            <div className="flex-shrink-0">
-              <FileText className="w-5 h-5 text-blue-500 mt-1" />
-            </div>
-            <div className="flex-1">
-              <p className="text-sm text-gray-600 font-medium">Ghi chú</p>
-              <p className="text-base text-gray-800">{student.notes}</p>
-            </div>
-          </div>
-        )}
       </div>
 
       {/* QR Code Section */}
