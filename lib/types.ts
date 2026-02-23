@@ -13,6 +13,7 @@ export interface StudentInfo {
   electricityCost: number | string; // Column I: Tiền điện điều hòa
   totalCost: number | string;      // Column J: Tổng tiền
   notes: string;             // Column K: Ghi chú
+  transferContent?: string;  // Column L: Nội dung chuyển khoản
   qrCode?: string;           // Column N: QRCode (URL to QR image)
 }
 

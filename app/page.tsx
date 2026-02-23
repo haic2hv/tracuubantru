@@ -70,7 +70,7 @@ export default function Home() {
 
           {/* Subtitle - Main Title */}
           <h1 className="text-3xl md:text-4xl font-bold text-center mb-4" style={{ color: '#EE730C' }}>
-            TRA CỨU BẢN TRÚ
+            TRA CỨU BÁN TRÚ
           </h1>
 
           {/* Description */}
