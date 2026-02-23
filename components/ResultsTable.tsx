@@ -40,6 +40,7 @@ export function ResultsTable({ students, onStudentSelect }: ResultsTableProps) {
             <TableHead className="text-white font-semibold text-right">Tiền điện</TableHead>
             <TableHead className="text-white font-semibold text-right">Tổng tiền</TableHead>
             <TableHead className="text-white font-semibold">Ghi chú</TableHead>
+            <TableHead className="text-white font-semibold">QR Chuyển khoản</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -59,6 +60,21 @@ export function ResultsTable({ students, onStudentSelect }: ResultsTableProps) {
               <TableCell className="text-right">{formatCurrency(student.electricityCost)}</TableCell>
               <TableCell className="text-right font-semibold">{formatCurrency(student.totalCost)}</TableCell>
               <TableCell>{student.notes}</TableCell>
+              <TableCell>
+                {student.qrCode ? (
+                  <img 
+                    src={student.qrCode} 
+                    alt="QR Code chuyển khoản" 
+                    className="w-16 h-16 object-contain cursor-pointer hover:opacity-80"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      // Optional: Show full size QR in modal
+                    }}
+                  />
+                ) : (
+                  <span className="text-gray-400">-</span>
+                )}
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
