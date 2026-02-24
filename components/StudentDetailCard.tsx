@@ -209,8 +209,8 @@ export function StudentDetailCard({ student }: StudentDetailCardProps) {
 
       {/* QR Code Modal */}
       {qrModalOpen && student.qrCode && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white rounded-lg p-6 max-w-2xl mx-4 relative">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
+          <div className="bg-white rounded-lg p-4 md:p-6 w-full max-w-sm md:max-w-md relative">
             <button
               onClick={() => setQrModalOpen(false)}
               className="absolute top-4 right-4 p-2 hover:bg-gray-100 rounded-lg transition-colors"
@@ -219,21 +219,21 @@ export function StudentDetailCard({ student }: StudentDetailCardProps) {
               <X size={24} className="text-gray-600" />
             </button>
 
-            <h3 className="text-lg font-bold text-gray-800 mb-4">QR Code Chuyển Khoản</h3>
+            <h3 className="text-lg font-bold text-gray-800 mb-2 md:mb-4">QR Code Chuyển Khoản</h3>
             <p className="text-sm text-gray-600 mb-4">{student.name} - Lớp {student.class}</p>
 
-            <div className="flex justify-center mb-6">
+            <div className="flex justify-center mb-4 md:mb-6">
               <img
                 src={student.qrCode}
                 alt="QR Code chuyển khoản"
-                className="max-w-sm object-contain border-2 border-gray-300 rounded-lg p-4"
+                className="w-40 h-40 md:w-56 md:h-56 object-contain border-2 border-gray-300 rounded-lg p-2 md:p-4"
               />
             </div>
 
-            <div className="flex gap-3 justify-center">
+            <div className="flex gap-2 md:gap-3 justify-center">
               <Button
                 onClick={handleDownloadQR}
-                className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white"
+                className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm md:text-base"
               >
                 <Download size={16} />
                 Tải xuống
@@ -241,6 +241,7 @@ export function StudentDetailCard({ student }: StudentDetailCardProps) {
               <Button
                 onClick={() => setQrModalOpen(false)}
                 variant="outline"
+                className="text-sm md:text-base"
               >
                 Đóng
               </Button>
