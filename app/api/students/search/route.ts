@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { google } from 'googleapis';
 import { StudentInfo, SearchResponse } from '@/lib/types';
-import { removeDiacritics } from '@/lib/vietnameseUtils';
+import { removeDiacritics, isFuzzyMatch, normalizeVietnamese } from '@/lib/vietnameseUtils';
 
 /**
  * Initialize Google Sheets API client using API Key
@@ -82,7 +82,12 @@ async function fetchStudentData(): Promise<StudentInfo[]> {
 }
 
 /**
- * Search students by name and class
+ * Search students by name and class with advanced matching
+ * Supports:
+ * - Vietnamese text without diacritics (e.g., "Nguyen Van An" matches "Nguyễn Văn An")
+ * - Fuzzy matching for typos in Vietnamese characters
+ * - Case-insensitive matching
+ * - Partial word matching
  */
 function searchStudents(
   students: StudentInfo[],
@@ -91,18 +96,23 @@ function searchStudents(
 ): StudentInfo[] {
   let results = students;
 
-  // Filter by name (partial match, case-insensitive, diacritics-insensitive)
+  // Filter by name with advanced Vietnamese support
   if (searchName && searchName.trim()) {
-    const searchNameNormalized = removeDiacritics(searchName.toLowerCase());
     results = results.filter(student => {
-      const studentNameNormalized = removeDiacritics(student.name.toLowerCase());
-      return studentNameNormalized.includes(searchNameNormalized);
+      // Use fuzzy matching to handle typos and variations
+      return isFuzzyMatch(student.name, searchName);
     });
   }
 
-  // Filter by class (exact match)
+  // Filter by class (case-insensitive, but typically exact match)
   if (searchClass && searchClass.trim()) {
-    results = results.filter(student => student.class === searchClass.trim());
+    const normalizedSearchClass = normalizeVietnamese(searchClass.trim());
+    results = results.filter(student => {
+      const normalizedStudentClass = normalizeVietnamese(student.class);
+      // Try exact match first, then fuzzy match if needed
+      return normalizedStudentClass === normalizedSearchClass || 
+             isFuzzyMatch(student.class, searchClass);
+    });
   }
 
   return results;
